@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/dealListingFragment">
+
+    <fragment
+        android:id="@+id/dealListingFragment"
+        android:name="com.sukhralia.gameheist.DealFragment"
+        android:label="fragment_deal_listing"
+        tools:layout="@layout/fragment_deal_listing" >
+        <action
+            android:id="@+id/action_dealListingFragment_to_dealPageFragment"
+            app:destination="@id/dealPageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dealPageFragment"
+        android:name="com.sukhralia.gameheist.DealPageFragment"
+        android:label="fragment_deal_page"
+        tools:layout="@layout/fragment_deal_page" />
+</navigation>

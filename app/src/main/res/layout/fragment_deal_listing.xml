@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F5F6F8"
+        tools:context=".DealFragment">
+
+        <TextView
+            android:id="@+id/app_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_light"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:padding="4dp"
+            android:text="@string/app_name"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/filter_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F5F6F8"
+            android:layout_margin="5dp"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/app_title">
+
+            <Spinner
+                android:id="@+id/filter_1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:textAlignment="center"
+                android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
+                app:layout_constraintEnd_toStartOf="@+id/filter_2"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/filter_1h" />
+
+            <Spinner
+                android:id="@+id/filter_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:textAlignment="center"
+                android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
+                app:layout_constraintEnd_toStartOf="@+id/filter_3"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/filter_1"
+                app:layout_constraintTop_toTopOf="@+id/filter_1" />
+
+            <Spinner
+                android:id="@+id/filter_3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/filter_2"
+                app:layout_constraintTop_toTopOf="@+id/filter_2" />
+
+            <TextView
+                android:id="@+id/filter_1h"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Platform"
+                app:layout_constraintEnd_toEndOf="@+id/filter_1"
+                app:layout_constraintStart_toStartOf="@+id/filter_1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/filter_2h"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Type"
+                app:layout_constraintEnd_toEndOf="@+id/filter_2"
+                app:layout_constraintStart_toStartOf="@+id/filter_2"
+                app:layout_constraintTop_toTopOf="@+id/filter_1h" />
+
+            <TextView
+                android:id="@+id/filter_3h"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Sort"
+                app:layout_constraintEnd_toEndOf="@+id/filter_3"
+                app:layout_constraintStart_toStartOf="@+id/filter_3"
+                app:layout_constraintTop_toTopOf="@+id/filter_1h" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/deal_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scrollbars="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter_container"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No data found"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/deal_list"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/app_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

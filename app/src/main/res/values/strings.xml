@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Game Heist</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="platform">
+        <item>any</item>
+        <item>pc</item>
+        <item>steam</item>
+        <item>epic-games-store</item>
+        <item>ubisoft</item>
+        <item>gog</item>
+        <item>itchio</item>
+        <item>xbox-one</item>
+        <item>switch</item>
+        <item>android</item>
+        <item>ios</item>
+        <item>vr</item>
+        <item>battlenet</item>
+        <item>origin</item>
+        <item>drm-free</item>
+    </string-array>
+
+    <string-array name="type">
+        <item>any</item>
+        <item>game</item>
+        <item>loot</item>
+        <item>beta</item>
+    </string-array>
+
+    <string-array name="sort_by">
+        <item>any</item>
+        <item>date</item>
+        <item>value</item>
+        <item>popularity</item>
+    </string-array>
+</resources>
