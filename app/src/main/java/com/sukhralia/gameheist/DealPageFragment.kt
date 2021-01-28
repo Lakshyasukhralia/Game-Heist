@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,7 +61,7 @@ class DealPageFragment : Fragment() {
             binding.plt.text = it.platforms
             binding.type.text = it.type
             binding.desc.text = it.description
-            binding.instruction.text = it.instructions
+            binding.instruction.text = Html.fromHtml(it.instructions.replace("\n","<br>"))
             binding.users.text = "${it.users}+ Claimed"
 
             if (it.worth != "N/A")
