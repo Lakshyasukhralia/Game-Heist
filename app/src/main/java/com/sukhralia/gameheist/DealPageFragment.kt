@@ -70,7 +70,7 @@ class DealPageFragment : Fragment() {
                 }
 
             GlideApp.with(mContext)
-                .load(it.image)
+                .load(it.thumbnail)
                 .into(binding.image)
 
             when (it.status) {

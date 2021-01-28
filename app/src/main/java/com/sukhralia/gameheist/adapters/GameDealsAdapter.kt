@@ -5,6 +5,8 @@ import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
@@ -14,14 +16,19 @@ import com.sukhralia.gameheist.databinding.GameDealsTileBinding
 import com.sukhralia.gameheist.models.DealModel
 import com.sukhralia.gameheist.utils.BannerImageView
 import com.sukhralia.gameheist.utils.GlideApp
+import java.util.*
+import kotlin.collections.ArrayList
 
-class GameDealsAdapter : RecyclerView.Adapter<GameDealsAdapter.MyViewHolder>() {
+class GameDealsAdapter : RecyclerView.Adapter<GameDealsAdapter.MyViewHolder>(), Filterable {
 
     lateinit var mContext: Context
+
+    var myDataFilter = listOf<DealModel>()
 
     var myData = listOf<DealModel>()
         set(value) {
             field = value
+            myDataFilter = myData
             notifyDataSetChanged()
         }
 
@@ -48,7 +55,7 @@ class GameDealsAdapter : RecyclerView.Adapter<GameDealsAdapter.MyViewHolder>() {
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
-        val item = myData[position]
+        val item = myDataFilter[position]
 
         holder.myItemView.title.text = item.title
 
@@ -97,7 +104,37 @@ class GameDealsAdapter : RecyclerView.Adapter<GameDealsAdapter.MyViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return myData.size
+        return myDataFilter.size
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val charSearch = constraint.toString()
+                if (charSearch.isEmpty()) {
+                    myDataFilter = myData
+                } else {
+                    val resultList = ArrayList<DealModel>()
+                    for (row in myData) {
+                        if (row.title.toLowerCase(Locale.ROOT)
+                                .contains(charSearch.toLowerCase(Locale.ROOT))
+                        ) {
+                            resultList.add(row)
+                        }
+                    }
+                    myDataFilter = resultList
+                }
+                val filterResults = FilterResults()
+                filterResults.values = myDataFilter
+                return filterResults
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                myDataFilter = results?.values as ArrayList<DealModel>
+                notifyDataSetChanged()
+            }
+        }
     }
 
 }

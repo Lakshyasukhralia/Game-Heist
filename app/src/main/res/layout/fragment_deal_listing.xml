@@ -8,35 +8,34 @@
         android:background="#F5F6F8"
         tools:context=".DealFragment">
 
-        <TextView
-            android:id="@+id/app_title"
-            android:layout_width="0dp"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:layout_marginTop="10dp"
-            android:ellipsize="end"
-            android:fontFamily="@font/poppins_light"
-            android:gravity="center"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            android:padding="4dp"
-            android:text="@string/app_name"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:background="@drawable/search_view_bg"
+            android:textCursorDrawable="@null"
+            app:iconifiedByDefault="false"
+            app:layout_constraintEnd_toEndOf="@+id/filter_container"
+            app:layout_constraintStart_toStartOf="@+id/filter_container"
+            app:queryBackground="@null"
+            app:layout_constraintTop_toBottomOf="@id/filter_container"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/filter_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
             android:background="#F5F6F8"
-            android:layout_margin="5dp"
-            android:padding="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/app_title">
+            app:layout_constraintTop_toTopOf="parent">
 
             <Spinner
                 android:id="@+id/filter_1"
@@ -110,12 +109,13 @@
             android:id="@+id/deal_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/filter_container"
+            app:layout_constraintTop_toBottomOf="@+id/search_bar"
             app:layout_constraintVertical_bias="1.0" />
 
         <TextView

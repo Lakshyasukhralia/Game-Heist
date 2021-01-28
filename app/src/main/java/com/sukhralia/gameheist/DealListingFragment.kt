@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -101,6 +102,17 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
         setFilter(R.array.platform, binding.filter1)
         setFilter(R.array.type, binding.filter2)
         setFilter(R.array.sort_by, binding.filter3)
+
+        binding.searchBar.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                dealAdapter.filter.filter(newText)
+                return false
+            }
+        })
 
         return binding.root
     }

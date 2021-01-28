@@ -21,6 +21,7 @@
                 android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/active_tile_bg">
 
                 <com.sukhralia.gameheist.utils.BannerImageView
@@ -36,7 +37,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/deal_info_container"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:padding="5dp"
                     app:layout_constraintBottom_toTopOf="@+id/claim"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -47,9 +48,7 @@
                         android:id="@+id/title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
                         android:fontFamily="@font/poppins_light"
-                        android:maxLines="1"
                         android:padding="4dp"
                         android:textColor="@color/black"
                         android:textSize="18sp"
@@ -184,16 +183,15 @@
                     android:layout_marginLeft="85dp"
                     android:layout_marginEnd="85dp"
                     android:layout_marginRight="85dp"
-                    android:layout_marginBottom="10dp"
                     android:background="@drawable/claim_button"
                     android:text="Claim"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     app:backgroundTint="@null"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/deal_info_container" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
     </androidx.core.widget.NestedScrollView>
