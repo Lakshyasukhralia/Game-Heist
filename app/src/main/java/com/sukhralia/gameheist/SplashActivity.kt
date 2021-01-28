@@ -28,7 +28,7 @@ class SplashActivity : AppCompatActivity() {
         super.onPostCreate(savedInstanceState)
 
 
-        binding.logo.background = VectorDrawableCompat.create(resources, R.drawable.ic_console, null)
+//        binding.logo.background = VectorDrawableCompat.create(resources, R.drawable.ic_console, null)
 
         list.add(R.drawable.ic_console)
         list.add(R.drawable.ic_gold)
