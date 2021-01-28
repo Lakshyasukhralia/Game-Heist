@@ -45,6 +45,7 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private val viewModel: DealViewModel by viewModels()
     private lateinit var mContext: MainActivity
     private lateinit var dealAdapter: GameDealsAdapter
+    private var myView: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +60,10 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
+        if (myView != null)
+            return myView
+
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_deal_listing, container, false)
 
@@ -68,14 +73,11 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
             it.adapter = dealAdapter
         }
 
-        if(!viewModel.viewModelInitialized) {
-            viewModel.getDeals(
-                mContext.resources.getStringArray(R.array.platform)[0],
-                mContext.resources.getStringArray(R.array.type)[0],
-                mContext.resources.getStringArray(R.array.sort_by)[0]
-            )
-            viewModel.viewModelInitialized = true
-        }
+        viewModel.getDeals(
+            mContext.resources.getStringArray(R.array.platform)[0],
+            mContext.resources.getStringArray(R.array.type)[0],
+            mContext.resources.getStringArray(R.array.sort_by)[0]
+        )
 
         lifecycleScope.launchWhenStarted {
             withContext(Dispatchers.Main) {
@@ -103,7 +105,7 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
         setFilter(R.array.type, binding.filter2)
         setFilter(R.array.sort_by, binding.filter3)
 
-        binding.searchBar.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+        binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -114,7 +116,9 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
             }
         })
 
-        return binding.root
+        myView = binding.root
+
+        return myView
     }
 
     private fun setFilter(id: Int, spinner: Spinner) {

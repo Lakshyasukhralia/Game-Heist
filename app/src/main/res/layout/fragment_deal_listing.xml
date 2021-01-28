@@ -127,7 +127,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/deal_list"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/app_title" />
+            app:layout_constraintTop_toTopOf="@+id/search_bar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

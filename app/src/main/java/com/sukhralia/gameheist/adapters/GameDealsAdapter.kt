@@ -131,7 +131,11 @@ class GameDealsAdapter : RecyclerView.Adapter<GameDealsAdapter.MyViewHolder>(), 
 
             @Suppress("UNCHECKED_CAST")
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                myDataFilter = results?.values as ArrayList<DealModel>
+                if((results?.values as List<DealModel>).size != 0) {
+                    myDataFilter = results.values as ArrayList<DealModel>
+                }else{
+                    myDataFilter = myData
+                }
                 notifyDataSetChanged()
             }
         }

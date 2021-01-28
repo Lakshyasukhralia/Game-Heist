@@ -12,7 +12,6 @@ class DealViewModel : ViewModel() {
 
     val response = MutableStateFlow<ResponseState>(ResponseState.Empty)
 
-    var viewModelInitialized = false
     lateinit var mPlt : String
     lateinit var mType : String
     lateinit var mSort : String
