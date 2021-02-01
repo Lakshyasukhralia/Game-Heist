@@ -1,5 +1,7 @@
 package com.sukhralia.gameheist.viewmodels
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sukhralia.gameheist.models.DealModel
@@ -24,11 +26,11 @@ class DealViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
             response.value = ResponseState.Loading
-            getResult()
+            fetchResult()
         }
     }
 
-    private suspend fun getResult() {
+    private suspend fun fetchResult() {
 
         val query = HashMap<String,String>()
 

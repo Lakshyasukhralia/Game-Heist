@@ -11,10 +11,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.preferencesKey
+import androidx.datastore.preferences.createDataStore
 import androidx.fragment.app.Fragment
 import com.sukhralia.gameheist.databinding.FragmentDealPageBinding
 import com.sukhralia.gameheist.models.DealModel
 import com.sukhralia.gameheist.utils.GlideApp
+import kotlinx.coroutines.flow.first
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -61,7 +67,7 @@ class DealPageFragment : Fragment() {
             binding.plt.text = it.platforms
             binding.type.text = it.type
             binding.desc.text = it.description
-            binding.instruction.text = Html.fromHtml(it.instructions.replace("\n","<br>"))
+            binding.instruction.text = Html.fromHtml(it.instructions.replace("\n", "<br>"))
             binding.users.text = "${it.users}+ Claimed"
 
             if (it.worth != "N/A")

@@ -11,6 +11,11 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.preferencesKey
+import androidx.datastore.preferences.createDataStore
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,11 +24,9 @@ import com.sukhralia.gameheist.adapters.GameDealsAdapter
 import com.sukhralia.gameheist.databinding.FragmentDealListingBinding
 import com.sukhralia.gameheist.models.DealModel
 import com.sukhralia.gameheist.viewmodels.DealViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.first
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,6 +49,7 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private lateinit var mContext: MainActivity
     private lateinit var dealAdapter: GameDealsAdapter
     private var myView: View? = null
+    private lateinit var dataStore: DataStore<Preferences>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,8 +68,9 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
         if (myView != null)
             return myView
 
-        binding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_deal_listing, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_deal_listing, container, false)
+
+        dataStore = mContext.createDataStore(name = "settings")
 
         binding.dealList.let {
             it.layoutManager = LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false)
@@ -73,13 +78,15 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
             it.adapter = dealAdapter
         }
 
-        viewModel.getDeals(
-            mContext.resources.getStringArray(R.array.platform)[0],
-            mContext.resources.getStringArray(R.array.type)[0],
-            mContext.resources.getStringArray(R.array.sort_by)[0]
-        )
 
         lifecycleScope.launchWhenStarted {
+
+            viewModel.getDeals(
+                readPreferences("plt")?: mContext.resources.getStringArray(R.array.platform)[0],
+                readPreferences("type")?: mContext.resources.getStringArray(R.array.type)[0],
+                readPreferences("sort")?: mContext.resources.getStringArray(R.array.sort_by)[0]
+            )
+
             withContext(Dispatchers.Main) {
                 viewModel.response.collect() {
                     when (it) {
@@ -122,7 +129,7 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     private fun setFilter(id: Int, spinner: Spinner) {
-        ArrayAdapter.createFromResource(
+        val arrayAdapter = ArrayAdapter.createFromResource(
             mContext,
             id,
             android.R.layout.simple_spinner_item
@@ -132,6 +139,21 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
 
         spinner.setSelection(0, false)
+
+        lifecycleScope.launch {
+            when(id){
+                R.array.type -> {readPreferences("type")?.let {
+                    spinner.setSelection(arrayAdapter.getPosition(it), false)
+                }}
+                R.array.platform -> {readPreferences("plt")?.let {
+                    spinner.setSelection(arrayAdapter.getPosition(it), false)
+                }}
+                R.array.sort_by -> {readPreferences("sort")?.let {
+                    spinner.setSelection(arrayAdapter.getPosition(it), false)
+                }}
+            }
+
+        }
         spinner.onItemSelectedListener = this
     }
 
@@ -196,10 +218,32 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        viewModel.getDeals(
-            mContext.resources.getStringArray(R.array.platform)[0],
-            mContext.resources.getStringArray(R.array.type)[0],
-            mContext.resources.getStringArray(R.array.sort_by)[0]
-        )
+//        viewModel.getDeals(
+//            mContext.resources.getStringArray(R.array.platform)[0],
+//            mContext.resources.getStringArray(R.array.type)[0],
+//            mContext.resources.getStringArray(R.array.sort_by)[0]
+//        )
+    }
+
+    private suspend fun savePreferences(key: String, value: String) {
+        val dataStoreKey = preferencesKey<String>(key)
+        dataStore.edit {
+            it[dataStoreKey] = value
+        }
+    }
+
+    private suspend fun readPreferences(key: String): String? {
+        val dataStoreKey = preferencesKey<String>(key)
+        val preferences = dataStore.data.first()
+        return preferences[dataStoreKey]
+    }
+
+    override fun onStop() {
+        super.onStop()
+        lifecycleScope.launch {
+            savePreferences("plt",viewModel.mPlt)
+            savePreferences("type",viewModel.mType)
+            savePreferences("sort",viewModel.mSort)
+        }
     }
 }
