@@ -1,11 +1,9 @@
 package com.sukhralia.gameheist.viewmodels
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sukhralia.gameheist.models.DealModel
-import com.sukhralia.gameheist.network.GameRiftApi
+import com.sukhralia.gameheist.network.GameHeistApi
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -27,11 +25,11 @@ class DealViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             response.value = ResponseState.Loading
             fetchResult()
+
         }
     }
 
     private suspend fun fetchResult() {
-
         val query = HashMap<String,String>()
 
         if(mPlt!="any")
@@ -41,7 +39,7 @@ class DealViewModel : ViewModel() {
         if(mSort!="any")
             query["sort-by"] = mSort
 
-        val getDealsDeferred = GameRiftApi.retrofitService.getGiveAwayAsync(query)
+        val getDealsDeferred = GameHeistApi.retrofitService.getGiveAwayAsync(query)
 
         try {
             val dealsResult = getDealsDeferred.await()

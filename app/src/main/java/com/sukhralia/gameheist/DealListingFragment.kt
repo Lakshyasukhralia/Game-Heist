@@ -23,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.sukhralia.gameheist.adapters.GameDealsAdapter
 import com.sukhralia.gameheist.databinding.FragmentDealListingBinding
 import com.sukhralia.gameheist.models.DealModel
+import com.sukhralia.gameheist.utils.GameHeistApp
 import com.sukhralia.gameheist.viewmodels.DealViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -51,6 +52,10 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private var myView: View? = null
     private lateinit var dataStore: DataStore<Preferences>
 
+    private var platform: Deferred<String>? = null
+    private var type: Deferred<String>? = null
+    private var sort: Deferred<String>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -68,7 +73,8 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
         if (myView != null)
             return myView
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_deal_listing, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_deal_listing, container, false)
 
         dataStore = mContext.createDataStore(name = "settings")
 
@@ -81,10 +87,18 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         lifecycleScope.launchWhenStarted {
 
+            platform = async {GameHeistApp.instance(mContext).readPreferences("plt")!!}
+            type = async { GameHeistApp.instance(mContext).readPreferences("type")!!}
+            sort =  async { GameHeistApp.instance(mContext).readPreferences("sort")!!}
+
+            setFilter(R.array.platform, binding.filter1)
+            setFilter(R.array.type, binding.filter2)
+            setFilter(R.array.sort_by, binding.filter3)
+
             viewModel.getDeals(
-                readPreferences("plt")?: mContext.resources.getStringArray(R.array.platform)[0],
-                readPreferences("type")?: mContext.resources.getStringArray(R.array.type)[0],
-                readPreferences("sort")?: mContext.resources.getStringArray(R.array.sort_by)[0]
+                platform?.await() ?: mContext.resources.getStringArray(R.array.platform)[0],
+                type?.await() ?: mContext.resources.getStringArray(R.array.type)[0],
+                sort?.await() ?: mContext.resources.getStringArray(R.array.sort_by)[0]
             )
 
             withContext(Dispatchers.Main) {
@@ -108,10 +122,6 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
             }
         }
 
-        setFilter(R.array.platform, binding.filter1)
-        setFilter(R.array.type, binding.filter2)
-        setFilter(R.array.sort_by, binding.filter3)
-
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -128,6 +138,7 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
         return myView
     }
 
+
     private fun setFilter(id: Int, spinner: Spinner) {
         val arrayAdapter = ArrayAdapter.createFromResource(
             mContext,
@@ -141,18 +152,23 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
         spinner.setSelection(0, false)
 
         lifecycleScope.launch {
-            when(id){
-                R.array.type -> {readPreferences("type")?.let {
-                    spinner.setSelection(arrayAdapter.getPosition(it), false)
-                }}
-                R.array.platform -> {readPreferences("plt")?.let {
-                    spinner.setSelection(arrayAdapter.getPosition(it), false)
-                }}
-                R.array.sort_by -> {readPreferences("sort")?.let {
-                    spinner.setSelection(arrayAdapter.getPosition(it), false)
-                }}
+            when (id) {
+                R.array.type -> {
+                    type?.await()?.let {
+                        spinner.setSelection(arrayAdapter.getPosition(it), false)
+                    }
+                }
+                R.array.platform -> {
+                    platform?.await()?.let {
+                        spinner.setSelection(arrayAdapter.getPosition(it), false)
+                    }
+                }
+                R.array.sort_by -> {
+                    sort?.await()?.let {
+                        spinner.setSelection(arrayAdapter.getPosition(it), false)
+                    }
+                }
             }
-
         }
         spinner.onItemSelectedListener = this
     }
@@ -225,25 +241,12 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
 //        )
     }
 
-    private suspend fun savePreferences(key: String, value: String) {
-        val dataStoreKey = preferencesKey<String>(key)
-        dataStore.edit {
-            it[dataStoreKey] = value
-        }
-    }
-
-    private suspend fun readPreferences(key: String): String? {
-        val dataStoreKey = preferencesKey<String>(key)
-        val preferences = dataStore.data.first()
-        return preferences[dataStoreKey]
-    }
-
     override fun onStop() {
         super.onStop()
         lifecycleScope.launch {
-            savePreferences("plt",viewModel.mPlt)
-            savePreferences("type",viewModel.mType)
-            savePreferences("sort",viewModel.mSort)
+            GameHeistApp.instance(mContext).savePreferences("plt", viewModel.mPlt)
+            GameHeistApp.instance(mContext).savePreferences("type", viewModel.mType)
+            GameHeistApp.instance(mContext).savePreferences("sort", viewModel.mSort)
         }
     }
 }

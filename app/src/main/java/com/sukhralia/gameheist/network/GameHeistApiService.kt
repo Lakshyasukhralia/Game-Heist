@@ -1,5 +1,6 @@
 package com.sukhralia.gameheist.network
 
+import androidx.datastore.preferences.createDataStore
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -24,15 +25,15 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
-interface GameRiftApiService {
+interface GameHeistApiService {
 
     @GET("giveaways")
     fun getGiveAwayAsync(@QueryMap options : Map<String, String>):
             Deferred<List<DealModel>>
 }
 
-object GameRiftApi {
-    val retrofitService: GameRiftApiService by lazy {
-        retrofit.create(GameRiftApiService::class.java)
+object GameHeistApi {
+    val retrofitService: GameHeistApiService by lazy {
+        retrofit.create(GameHeistApiService::class.java)
     }
 }
