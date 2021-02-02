@@ -13,18 +13,18 @@ import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.sukhralia.gameheist.adapters.GameDealsAdapter
+import com.sukhralia.gameheist.database.DealDatabase
 import com.sukhralia.gameheist.databinding.FragmentDealListingBinding
 import com.sukhralia.gameheist.models.DealModel
 import com.sukhralia.gameheist.utils.GameHeistApp
 import com.sukhralia.gameheist.viewmodels.DealViewModel
+import com.sukhralia.gameheist.viewmodels.DealViewModelFactory
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
@@ -46,7 +46,7 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private var param2: String? = null
 
     private lateinit var binding: FragmentDealListingBinding
-    private val viewModel: DealViewModel by viewModels()
+    private lateinit var viewModel: DealViewModel
     private lateinit var mContext: MainActivity
     private lateinit var dealAdapter: GameDealsAdapter
     private var myView: View? = null
@@ -84,12 +84,22 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
             it.adapter = dealAdapter
         }
 
+        val application = requireNotNull(this.activity).application
+
+        val dataSource = DealDatabase.getInstance(application).dealDatabaseDao
+
+        val dealViewModelFactory =
+            DealViewModelFactory(
+                dataSource, application
+            )
+
+        viewModel = ViewModelProviders.of(this, dealViewModelFactory).get(DealViewModel::class.java)
 
         lifecycleScope.launchWhenStarted {
 
-            platform = async {GameHeistApp.instance(mContext).readPreferences("plt")!!}
-            type = async { GameHeistApp.instance(mContext).readPreferences("type")!!}
-            sort =  async { GameHeistApp.instance(mContext).readPreferences("sort")!!}
+            platform = async { GameHeistApp.instance(mContext).readPreferences("plt")!! }
+            type = async { GameHeistApp.instance(mContext).readPreferences("type")!! }
+            sort = async { GameHeistApp.instance(mContext).readPreferences("sort")!! }
 
             setFilter(R.array.platform, binding.filter1)
             setFilter(R.array.type, binding.filter2)
@@ -105,6 +115,13 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 viewModel.response.collect() {
                     when (it) {
                         is DealViewModel.ResponseState.Success -> {
+
+//                            withContext(Dispatchers.IO) {
+//                                if (viewModel.checkDb) {
+//                                    viewModel.checkNewDeals()
+//                                }
+//                            }
+
                             Snackbar.make(binding.root, "Success", Snackbar.LENGTH_LONG).show()
                             loadDealAdapter(it.data)
                         }
