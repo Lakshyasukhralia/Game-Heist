@@ -1,26 +1,29 @@
 package com.sukhralia.gameheist.viewmodels
 
 import android.app.Application
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sukhralia.gameheist.database.DealDatabaseDao
 import com.sukhralia.gameheist.models.DealModel
-import com.sukhralia.gameheist.network.GameHeistApi
+import com.sukhralia.gameheist.network.GameHeistApiService
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlin.math.min
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class DealViewModel(val database: DealDatabaseDao, application: Application) :
-    AndroidViewModel(application) {
+class DealViewModel @ViewModelInject constructor(var gameHeistApiService: GameHeistApiService) : ViewModel() {
 
     val response = MutableStateFlow<ResponseState>(ResponseState.Empty)
 
     lateinit var mPlt: String
     lateinit var mType: String
     lateinit var mSort: String
+
+//    @Inject
+//    lateinit var gameHeistApiService: GameHeistApiService
 
     var checkDb = true
 
@@ -46,7 +49,7 @@ class DealViewModel(val database: DealDatabaseDao, application: Application) :
         if (mSort != "any")
             query["sort-by"] = mSort
 
-        val getDealsDeferred = GameHeistApi.retrofitService.getGiveAwayAsync(query)
+        val getDealsDeferred = gameHeistApiService.fetchDealsAsync(query)
 
         try {
             val dealsResult = getDealsDeferred.await()
@@ -56,34 +59,34 @@ class DealViewModel(val database: DealDatabaseDao, application: Application) :
         }
     }
 
-    suspend fun checkNewDeals() {
-        checkDb = false
-        response.collect { newData ->
-            when (newData) {
-                is ResponseState.Success -> {
-
-                    var counter = 0
-
-                    val a = newData.data
-                    val b = database.getAllDeals()
-
-                    for (item in a) {
-                        for (item2 in b) {
-                            if (item.id == item2.id)
-                                counter++
-                        }
-                    }
-
-                    var newDeals = b - counter
-
-                    database.clear()
-                    database.insertAll(newData.data)
-                }
-                else -> {
-                }
-            }
-        }
-    }
+//    suspend fun checkNewDeals() {
+//        checkDb = false
+//        response.collect { newData ->
+//            when (newData) {
+//                is ResponseState.Success -> {
+//
+//                    var counter = 0
+//
+//                    val a = newData.data
+//                    val b = database.getAllDeals()
+//
+//                    for (item in a) {
+//                        for (item2 in b) {
+//                            if (item.id == item2.id)
+//                                counter++
+//                        }
+//                    }
+//
+//                    var newDeals = b - counter
+//
+//                    database.clear()
+//                    database.insertAll(newData.data)
+//                }
+//                else -> {
+//                }
+//            }
+//        }
+//    }
 
     sealed class ResponseState {
         data class Success(val data: List<DealModel>) : ResponseState()

@@ -14,6 +14,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.createDataStore
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +25,8 @@ import com.sukhralia.gameheist.databinding.FragmentDealListingBinding
 import com.sukhralia.gameheist.models.DealModel
 import com.sukhralia.gameheist.utils.GameHeistApp
 import com.sukhralia.gameheist.viewmodels.DealViewModel
-import com.sukhralia.gameheist.viewmodels.DealViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+//import com.sukhralia.gameheist.viewmodels.DealViewModelFactory
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
@@ -40,13 +42,14 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 @ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
     private lateinit var binding: FragmentDealListingBinding
-    private lateinit var viewModel: DealViewModel
+    private val viewModel: DealViewModel by viewModels()
     private lateinit var mContext: MainActivity
     private lateinit var dealAdapter: GameDealsAdapter
     private var myView: View? = null
@@ -88,12 +91,12 @@ class DealFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         val dataSource = DealDatabase.getInstance(application).dealDatabaseDao
 
-        val dealViewModelFactory =
-            DealViewModelFactory(
-                dataSource, application
-            )
-
-        viewModel = ViewModelProviders.of(this, dealViewModelFactory).get(DealViewModel::class.java)
+//        val dealViewModelFactory =
+//            DealViewModelFactory(
+//                dataSource, application
+//            )
+//
+//        viewModel = ViewModelProviders.of(this, dealViewModelFactory).get(DealViewModel::class.java)
 
         lifecycleScope.launchWhenStarted {
 

@@ -9,14 +9,11 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.sukhralia.gameheist.R
 import com.sukhralia.gameheist.databinding.GameDealsTileBinding
 import com.sukhralia.gameheist.models.DealModel
-import com.sukhralia.gameheist.utils.BannerImageView
 import com.sukhralia.gameheist.utils.GlideApp
 import java.util.*
 import kotlin.collections.ArrayList
